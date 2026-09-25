@@ -7,11 +7,17 @@
   --foreground: #0f172a;
 }
 
+html {
+  font-size: 16px;
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   -webkit-font-smoothing: antialiased;
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
 @keyframes pulse-subtle {
@@ -20,7 +26,7 @@ body {
     transform: scale(1);
   }
   50% {
-    opacity: 0.92;
+    opacity: 0.94;
     transform: scale(1.02);
   }
 }
@@ -31,15 +37,15 @@ body {
 
 /* Custom scrollbars for clean dashboards */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
   background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
   background: #cbd5e1;
-  border-radius: 3px;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;

@@ -3,7 +3,7 @@
 **Version:** 0.1  
 **Status:** Architecture Draft  
 **Product:** FarmRescue  
-**Event:** AGRITHON 2026
+**Category:** Agricultural Emergency Early Warning & Response
 
 ---
 
@@ -164,6 +164,6 @@ AI adapter receives validated facts (RiskAssessment, Evidence, ActionPlan) and p
 
 ---
 
-# 7. Simulation Mode for AGRITHON 2026
+# 7. Scenario Testing & Simulation Mode
 Controlled simulation mode allowing interactive manipulation of rainfall (0-120mm), drainage (Good/Poor), water level (Normal/High), crop stages, triggering dynamic reassessment and instant alerts.
 Clearly labeled: **DEMO / SIMULATION DATA**.

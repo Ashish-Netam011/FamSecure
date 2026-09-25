@@ -3,9 +3,9 @@ import './globals.css';
 import AppShell from '@/components/AppShell';
 
 export const metadata: Metadata = {
-  title: 'FarmRescue — Agricultural Emergency Response Platform',
+  title: 'FarmRescue — Agricultural Emergency Early Warning & Response Platform',
   description:
-    'Evidence-first early warning and validated response platform for smallholder farmers. AGRITHON 2026.',
+    'Evidence-first early warning and validated response platform for smallholder farmers and agricultural extension workers.',
 };
 
 export default function RootLayout({
@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">
+      <body className="antialiased text-slate-900">
         <AppShell>{children}</AppShell>
       </body>
     </html>

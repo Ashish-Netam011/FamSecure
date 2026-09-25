@@ -94,7 +94,7 @@ export default function SimulationDrawer({
       setStandingWaterDepthCm(18);
       setDrainage('poor');
       setCropStage('tillering');
-      setSimResult('Demo data reset to initial baseline.');
+      setSimResult('Baseline farm and incident conditions restored.');
       if (onReassessed) onReassessed();
     } catch {
       setSimResult('Reset failed.');
@@ -104,50 +104,52 @@ export default function SimulationDrawer({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden bg-black/50 backdrop-blur-sm flex justify-end">
-      <div className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col overflow-y-auto animate-in slide-in-from-right duration-200 border-l border-amber-200">
-        {/* Header */}
-        <div className="p-4 bg-gradient-to-r from-amber-600 to-amber-700 text-white flex items-center justify-between sticky top-0 z-10">
-          <div className="flex items-center space-x-2">
-            <Sliders className="w-5 h-5 text-amber-200" />
+    <div className="fixed inset-0 z-50 overflow-hidden bg-black/60 backdrop-blur-sm flex justify-end">
+      <div className="w-full max-w-lg bg-white h-full shadow-2xl flex flex-col overflow-y-auto animate-in slide-in-from-right duration-200 border-l border-amber-200">
+        {/* Header with increased text sizes */}
+        <div className="p-5 bg-gradient-to-r from-amber-600 to-amber-700 text-white flex items-center justify-between sticky top-0 z-10 shadow-sm">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 rounded-xl bg-amber-800/40 text-amber-200">
+              <Sliders className="w-6 h-6" />
+            </div>
             <div>
-              <h2 className="font-bold text-base tracking-wide flex items-center gap-1.5">
-                Simulation Mode
-                <span className="text-xs bg-amber-900/60 text-amber-200 px-2 py-0.5 rounded-full font-mono">
-                  AGRITHON 2026
+              <h2 className="font-black text-lg tracking-wide flex items-center gap-2">
+                Scenario Testing Lab
+                <span className="text-xs bg-amber-900/80 text-amber-200 px-2.5 py-0.5 rounded-full font-mono uppercase tracking-wider font-bold">
+                  Interactive
                 </span>
               </h2>
-              <p className="text-xs text-amber-100">
+              <p className="text-xs sm:text-sm text-amber-100 font-medium">
                 Test deterministic risk engine across changing conditions
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-white/10 text-white transition-colors"
+            className="p-2 rounded-xl hover:bg-white/10 text-white transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="w-6 h-6" />
           </button>
         </div>
 
         {/* Banner */}
-        <div className="bg-amber-50 border-b border-amber-200 p-3 text-xs text-amber-900 flex items-start gap-2">
-          <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-          <div>
-            <span className="font-bold">DEMO / SIMULATION DATA:</span> Parameters set
-            here inject simulated environmental evidence to demonstrate real-time
-            reassessment.
+        <div className="bg-amber-50 border-b border-amber-200 p-4 text-sm text-amber-950 flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+          <div className="leading-relaxed">
+            <span className="font-bold">ENVIRONMENTAL STRESS SIMULATION:</span> Adjust
+            rainfall and drainage below to observe how the deterministic rules and Safety
+            Gate recalculate risk and generate new action plans in real time.
           </div>
         </div>
 
         {/* Content */}
-        <div className="p-5 space-y-6 flex-1">
+        <div className="p-6 space-y-6 flex-1 text-sm">
           {/* Quick Presets */}
           <div>
-            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">
+            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2.5 block">
               Quick Test Scenarios
             </label>
-            <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="grid grid-cols-2 gap-2.5">
               <button
                 onClick={() =>
                   handleApplyPreset({
@@ -158,10 +160,10 @@ export default function SimulationDrawer({
                     stage: 'tillering',
                   })
                 }
-                className="p-2.5 rounded-lg border border-red-200 bg-red-50 hover:bg-red-100 text-red-900 font-medium text-left transition-colors"
+                className="p-3 rounded-xl border-2 border-red-200 bg-red-50 hover:bg-red-100 text-red-950 text-left transition-colors"
               >
-                ⛈️ <span className="font-bold">Severe Flood</span>
-                <div className="text-[10px] text-red-700">115mm, 48h, Critical</div>
+                <div className="font-bold text-sm">⛈️ Severe Flood</div>
+                <div className="text-xs text-red-700 font-medium mt-0.5">115mm, 48h → Critical</div>
               </button>
 
               <button
@@ -174,10 +176,10 @@ export default function SimulationDrawer({
                     stage: 'tillering',
                   })
                 }
-                className="p-2.5 rounded-lg border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-900 font-medium text-left transition-colors"
+                className="p-3 rounded-xl border-2 border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-950 text-left transition-colors"
               >
-                🌧️ <span className="font-bold">Heavy Waterlog</span>
-                <div className="text-[10px] text-amber-700">82mm, 24h, High</div>
+                <div className="font-bold text-sm">🌧️ Heavy Waterlog</div>
+                <div className="text-xs text-amber-700 font-medium mt-0.5">82mm, 24h → High</div>
               </button>
 
               <button
@@ -190,10 +192,10 @@ export default function SimulationDrawer({
                     stage: 'vegetative',
                   })
                 }
-                className="p-2.5 rounded-lg border border-yellow-200 bg-yellow-50 hover:bg-yellow-100 text-yellow-900 font-medium text-left transition-colors"
+                className="p-3 rounded-xl border-2 border-yellow-200 bg-yellow-50 hover:bg-yellow-100 text-yellow-950 text-left transition-colors"
               >
-                🌦️ <span className="font-bold">Moderate Pool</span>
-                <div className="text-[10px] text-yellow-700">35mm, 8h, Moderate</div>
+                <div className="font-bold text-sm">🌦️ Moderate Pool</div>
+                <div className="text-xs text-yellow-700 font-medium mt-0.5">35mm, 8h → Moderate</div>
               </button>
 
               <button
@@ -206,23 +208,23 @@ export default function SimulationDrawer({
                     stage: 'vegetative',
                   })
                 }
-                className="p-2.5 rounded-lg border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 font-medium text-left transition-colors"
+                className="p-3 rounded-xl border-2 border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-950 text-left transition-colors"
               >
-                ☀️ <span className="font-bold">Drained / Normal</span>
-                <div className="text-[10px] text-emerald-700">5mm, 0h, Low/Normal</div>
+                <div className="font-bold text-sm">☀️ Drained / Normal</div>
+                <div className="text-xs text-emerald-700 font-medium mt-0.5">5mm, 0h → Normal</div>
               </button>
             </div>
           </div>
 
           {/* Sliders */}
-          <div className="space-y-4">
+          <div className="space-y-5">
             {/* Rainfall */}
-            <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-              <div className="flex justify-between items-center mb-1 text-sm font-medium">
-                <span className="flex items-center gap-1.5 text-slate-700">
-                  <CloudRain className="w-4 h-4 text-blue-600" /> 24h Rainfall
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+              <div className="flex justify-between items-center mb-1.5">
+                <span className="flex items-center gap-2 text-slate-800 font-bold text-sm">
+                  <CloudRain className="w-5 h-5 text-blue-600" /> 24h Rainfall
                 </span>
-                <span className="font-bold text-blue-700 font-mono text-base">
+                <span className="font-black text-blue-700 font-mono text-lg">
                   {rainfall24h} mm
                 </span>
               </div>
@@ -233,22 +235,22 @@ export default function SimulationDrawer({
                 step="5"
                 value={rainfall24h}
                 onChange={(e) => setRainfall24h(Number(e.target.value))}
-                className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                className="w-full h-2.5 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
               />
-              <div className="flex justify-between text-[10px] text-slate-400 mt-1 font-mono">
+              <div className="flex justify-between text-xs text-slate-500 mt-1.5 font-mono">
                 <span>0 mm</span>
-                <span>40 mm (threshold)</span>
+                <span>40 mm (Alert)</span>
                 <span>140 mm</span>
               </div>
             </div>
 
             {/* Standing Water Hours */}
-            <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-              <div className="flex justify-between items-center mb-1 text-sm font-medium">
-                <span className="flex items-center gap-1.5 text-slate-700">
-                  <Clock className="w-4 h-4 text-amber-600" /> Standing Water Duration
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+              <div className="flex justify-between items-center mb-1.5">
+                <span className="flex items-center gap-2 text-slate-800 font-bold text-sm">
+                  <Clock className="w-5 h-5 text-amber-600" /> Standing Water Duration
                 </span>
-                <span className="font-bold text-amber-700 font-mono text-base">
+                <span className="font-black text-amber-700 font-mono text-lg">
                   {standingWaterHours} hours
                 </span>
               </div>
@@ -259,22 +261,22 @@ export default function SimulationDrawer({
                 step="2"
                 value={standingWaterHours}
                 onChange={(e) => setStandingWaterHours(Number(e.target.value))}
-                className="w-full h-2 bg-amber-100 rounded-lg appearance-none cursor-pointer accent-amber-600"
+                className="w-full h-2.5 bg-amber-100 rounded-lg appearance-none cursor-pointer accent-amber-600"
               />
-              <div className="flex justify-between text-[10px] text-slate-400 mt-1 font-mono">
+              <div className="flex justify-between text-xs text-slate-500 mt-1.5 font-mono">
                 <span>0 h</span>
-                <span>24 h (danger)</span>
+                <span>24 h (Damage threshold)</span>
                 <span>72 h</span>
               </div>
             </div>
 
             {/* Water Depth */}
-            <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-              <div className="flex justify-between items-center mb-1 text-sm font-medium">
-                <span className="flex items-center gap-1.5 text-slate-700">
-                  <Waves className="w-4 h-4 text-cyan-600" /> Standing Water Depth
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+              <div className="flex justify-between items-center mb-1.5">
+                <span className="flex items-center gap-2 text-slate-800 font-bold text-sm">
+                  <Waves className="w-5 h-5 text-cyan-600" /> Standing Water Depth
                 </span>
-                <span className="font-bold text-cyan-700 font-mono text-base">
+                <span className="font-black text-cyan-700 font-mono text-lg">
                   {standingWaterDepthCm} cm
                 </span>
               </div>
@@ -285,9 +287,9 @@ export default function SimulationDrawer({
                 step="1"
                 value={standingWaterDepthCm}
                 onChange={(e) => setStandingWaterDepthCm(Number(e.target.value))}
-                className="w-full h-2 bg-cyan-100 rounded-lg appearance-none cursor-pointer accent-cyan-600"
+                className="w-full h-2.5 bg-cyan-100 rounded-lg appearance-none cursor-pointer accent-cyan-600"
               />
-              <div className="flex justify-between text-[10px] text-slate-400 mt-1 font-mono">
+              <div className="flex justify-between text-xs text-slate-500 mt-1.5 font-mono">
                 <span>0 cm (dry)</span>
                 <span>15 cm (submergence)</span>
                 <span>35 cm</span>
@@ -296,19 +298,19 @@ export default function SimulationDrawer({
 
             {/* Soil Drainage */}
             <div>
-              <label className="text-xs font-semibold text-slate-600 mb-1.5 block">
+              <label className="text-xs font-bold text-slate-600 mb-2 block uppercase tracking-wider">
                 Field Drainage Condition
               </label>
-              <div className="grid grid-cols-3 gap-2 text-xs">
+              <div className="grid grid-cols-3 gap-2.5">
                 {(['poor', 'moderate', 'good'] as DrainageType[]).map((d) => (
                   <button
                     key={d}
                     type="button"
                     onClick={() => setDrainage(d)}
-                    className={`py-2 px-3 rounded-lg border font-medium capitalize transition-all ${
+                    className={`py-3 px-3 rounded-xl border text-sm font-bold capitalize transition-all ${
                       drainage === d
-                        ? 'border-emerald-600 bg-emerald-50 text-emerald-800 ring-2 ring-emerald-500/20'
-                        : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                        ? 'border-emerald-600 bg-emerald-50 text-emerald-900 ring-2 ring-emerald-500/20 shadow-sm'
+                        : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
                     }`}
                   >
                     {d}
@@ -319,13 +321,13 @@ export default function SimulationDrawer({
 
             {/* Crop Stage */}
             <div>
-              <label className="text-xs font-semibold text-slate-600 mb-1.5 block">
+              <label className="text-xs font-bold text-slate-600 mb-2 block uppercase tracking-wider">
                 Paddy Crop Stage
               </label>
               <select
                 value={cropStage}
                 onChange={(e) => setCropStage(e.target.value as CropStage)}
-                className="w-full text-xs p-2.5 rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full text-sm p-3 rounded-xl border border-slate-200 bg-white text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500"
               >
                 <option value="seedling">Seedling (Vulnerable)</option>
                 <option value="tillering">Tillering (High Root Growth)</option>
@@ -339,30 +341,30 @@ export default function SimulationDrawer({
 
           {/* Feedback banner */}
           {simResult && (
-            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-start gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-              <span>{simResult}</span>
+            <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-sm text-emerald-900 flex items-start gap-2.5 shadow-sm">
+              <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+              <span className="font-semibold leading-relaxed">{simResult}</span>
             </div>
           )}
         </div>
 
         {/* Footer actions */}
-        <div className="p-4 bg-slate-50 border-t border-slate-200 space-y-2 sticky bottom-0">
+        <div className="p-5 bg-slate-50 border-t border-slate-200 space-y-2.5 sticky bottom-0">
           <button
             onClick={handleRunSimulation}
             disabled={isSubmitting}
-            className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-sm shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+            className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl text-base shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 transition-all disabled:opacity-50"
           >
-            <RefreshCw className={`w-4 h-4 ${isSubmitting ? 'animate-spin' : ''}`} />
-            Apply & Reassess Incident
+            <RefreshCw className={`w-5 h-5 ${isSubmitting ? 'animate-spin' : ''}`} />
+            <span>Apply & Reassess Incident</span>
           </button>
           <button
             onClick={handleResetDemo}
             disabled={isSubmitting}
-            className="w-full py-2 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-medium rounded-xl text-xs flex items-center justify-center gap-1.5 transition-colors"
+            className="w-full py-2.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-semibold rounded-2xl text-sm flex items-center justify-center gap-2 transition-colors"
           >
-            <RotateCcw className="w-3.5 h-3.5 text-slate-400" />
-            Reset Initial Demo State
+            <RotateCcw className="w-4 h-4 text-slate-400" />
+            <span>Reset Initial Demo State</span>
           </button>
         </div>
       </div>

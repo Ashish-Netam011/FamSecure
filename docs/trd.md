@@ -59,5 +59,5 @@ Dynamic Reassessment & Outcomes
    - Non-destructive reassessments: Each reassessment appends a new assessment record.
    - Full auditable timeline.
 
-5. **AGRITHON Simulation Mode (Section 43 of Architecture)**
+5. **Scenario Testing & Simulation Mode (Section 43 of Architecture)**
    - Interactive simulation toolbar allowing judges/evaluators to slide rainfall (0-120mm), toggle drainage (Good/Poor), water level, and observe live reassessment and state transitions.

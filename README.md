@@ -2,7 +2,6 @@
 
 **Emergency Agricultural Early-Warning and Response Platform**  
 *“What should I do when the farm suddenly goes wrong?”*  
-*Developed for **AGRITHON 2026***
 
 ---
 
@@ -14,23 +13,23 @@ FarmRescue is built around one fundamental rule:
 > AI explains validated results; AI does not independently decide what a farmer should do.**
 
 ```text
-Data / Weather / Observations
-             ↓
-  Normalized Evidence Engine
-             ↓
- Deterministic Risk Engine (Versioned Rules)
-             ↓
-        Safety Gate (Evidence & Action Safety)
-             ↓
-  Structured Action Plan (Do Now, Avoid, Monitor)
-             ↓
- Human-in-the-Loop Verification (Field Worker)
-             ↓
-   AI Explanation Layer (Gemini Adapter)
-             ↓
-  Farmer & Extension Dashboard
-             ↓
-  Dynamic Reassessment & Auditable Outcomes
+Data / Weather / Farmer Observations
+                 ↓
+      Normalized Evidence Engine
+                 ↓
+   Deterministic Risk Engine (Versioned Rules)
+                 ↓
+     Safety Gate (Evidence & Action Validation)
+                 ↓
+    Structured Action Plan (Do Now, Avoid, Monitor)
+                 ↓
+   Human-in-the-Loop Verification (Field Worker)
+                 ↓
+     AI Explanation Layer (Gemini Adapter)
+                 ↓
+    Farmer Dashboard & Emergency Action Screen
+                 ↓
+    Dynamic Reassessment & Auditable Outcomes
 ```
 
 ---
@@ -56,15 +55,15 @@ Data / Weather / Observations
   - **Dynamic Reassessment**: Add new ground measurements (e.g., water level dropped to 4cm) and see live recalculation.
   - **Resolution & Outcome Form**: Submit post-incident feedback to evaluate recovery.
 
-- **Field Worker & FPO Portal (`/field-worker`)**:
+- **Field Worker & Extension Queue (`/field-worker`)**:
   - Pending field inspection queue with distance indicators.
   - Ground truth verification form: Confirm condition, adjust severity, and log official extension notes.
 
 - **Auditable History (`/history`)**:
   - Complete timeline and non-destructive audit log preserving every assessment version and farmer outcome.
 
-- **AGRITHON Simulation Controls**:
-  - Interactive simulator drawer allowing judges to manipulate 24h rainfall (0–140mm), standing water duration (0–72h), depth (0–35cm), soil drainage, and crop stage.
+- **Scenario Testing & Simulation Lab**:
+  - Interactive simulator drawer allowing users and evaluators to manipulate 24h rainfall (0–140mm), standing water duration (0–72h), depth (0–35cm), soil drainage, and crop stage.
   - Instant live reassessment across all dashboards.
 
 ---
@@ -106,12 +105,12 @@ GEMINI_API_KEY=your_gemini_api_key_here
 
 ---
 
-## 5. Primary AGRITHON Demonstration Walkthrough
+## 5. Primary Demonstration Walkthrough
 
 1. **Baseline**: View Krishna Reddy's Paddy field in Tillering stage facing 82mm of rain and 24h standing water (Severity: **HIGH RISK**).
 2. **Review Action Plan**: Inspect **DO NOW** (breach bunds, clear drainage), **AVOID** (urea application blocked), and **Why This Recommendation**.
 3. **Field Verification**: Open **Field Worker Queue**, inspect the incident, and submit official verification.
-4. **Interactive Simulation**: Click **"AGRITHON Simulation Controls"** on the bottom right:
+4. **Interactive Simulation**: Click **"⚡ Field Scenario Simulator"** on the bottom right:
    - Slide rainfall to **115 mm** and duration to **48 hours** → Observe instant escalation to **CRITICAL RISK**.
    - Slide rainfall to **5 mm** and standing water to **0 hours** with **Good Drainage** → Observe de-escalation to **LOW / NORMAL**.
 5. **Report a Problem**: Use the emergency wizard to report a new incident and watch the deterministic engine assess it in real time.
