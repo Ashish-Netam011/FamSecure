@@ -6,6 +6,8 @@ import {
   ExplanationResponse,
 } from '@/types';
 
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
+
 export interface AIExplanationInput {
   farm: Farm;
   assessment: RiskAssessment;
@@ -54,19 +56,38 @@ Respond ONLY with a valid JSON object matching this schema:
 }
 `;
 
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { responseMimeType: 'application/json' },
-          }),
-        }
-      );
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
+      const body = JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { responseMimeType: 'application/json' },
+      });
 
-      if (res.ok) {
+      // Gemini capacity errors (429/5xx) are transient; retry briefly before degrading to fallback.
+      let res: Response | null = null;
+      let lastStatus: number | string = 0;
+      for (let attempt = 0; attempt < 4 && !res; attempt++) {
+        try {
+          const r = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body,
+          });
+          lastStatus = r.status;
+          if (r.ok) {
+            res = r;
+            break;
+          }
+          // Non-retryable client error (bad key, malformed request) — bail immediately.
+          if (r.status !== 429 && r.status < 500) break;
+        } catch {
+          lastStatus = 'network_error';
+        }
+        if (attempt < 3) {
+          await new Promise((resolve) => setTimeout(resolve, 2000 * (attempt + 1)));
+        }
+      }
+
+      if (res?.ok) {
         const data = await res.json();
         const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
         if (text) {
@@ -81,9 +102,17 @@ Respond ONLY with a valid JSON object matching this schema:
             source: 'ai_adapter_gemini',
           };
         }
+      } else {
+        console.warn(
+          `[FarmRescue AI] Gemini request failed (status: ${lastStatus}); using deterministic fallback.`
+        );
       }
-    } catch {
+    } catch (err) {
       // Degrade gracefully to deterministic fallback
+      console.warn(
+        '[FarmRescue AI] Gemini explanation failed; using deterministic fallback.',
+        err instanceof Error ? err.message : err
+      );
     }
   }
 

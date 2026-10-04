@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": ".tmp-testbuild",
+    "rootDir": "src",
+    "baseUrl": "src",
+    "paths": { "@/*": ["*"] },
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "noEmit": false
+  },
+  "include": [
+    "src/types/index.ts",
+    "src/lib/geo/**/*.ts",
+    "src/lib/admin/**/*.ts",
+    "src/domain/**/*.ts"
+  ],
+  "exclude": ["src/domain/store/index.ts", "src/domain/actions/**", "src/domain/risk/**", "src/domain/safety/**", "src/domain/ai/**", "src/domain/evidence/**", "src/domain/weather/adapter.ts"]
+}

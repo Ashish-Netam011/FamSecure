@@ -59,10 +59,18 @@ export function evaluateRisk(input: RuleEvaluationInput): RiskAssessment {
   let escalationRequired = false;
   let rationale = 'Routine environmental conditions within acceptable agronomic thresholds.';
 
+  // Rule priority: an explicitly reported incident type is the primary evidence.
+  // Ambient environmental signals (heavy rain, extreme heat) only auto-route
+  // reports of type 'other', where the farmer did not identify the problem.
+  const isWaterIncident =
+    incidentType === 'waterlogging' || incidentType === 'heavy_rain';
+  const isAmbientRouted = incidentType === 'other';
+  const hasWaterEvidence = rainfall24h >= 40 || standingWaterHours >= 12;
+
   // 1. Waterlogging Rule for Paddy
   if (
     farm.crop === 'paddy' &&
-    (incidentType === 'waterlogging' || incidentType === 'heavy_rain' || rainfall24h >= 40 || standingWaterHours >= 12)
+    (isWaterIncident || (isAmbientRouted && hasWaterEvidence))
   ) {
     ruleVersion = RULE_VERSIONS.PADDY_WATERLOGGING;
 
@@ -94,8 +102,8 @@ export function evaluateRisk(input: RuleEvaluationInput): RiskAssessment {
       rationale = 'Soil moisture and standing water within normal paddy cultivation bounds.';
     }
   }
-  // 2. Heat Stress Rule
-  else if (incidentType === 'heat_stress' || temperature >= 36) {
+  // 2. Heat Stress Rule (explicit report wins over ambient rain evidence)
+  else if (incidentType === 'heat_stress' || (isAmbientRouted && temperature >= 36)) {
     ruleVersion = RULE_VERSIONS.HEAT_STRESS;
     if (temperature >= 40 && ['flowering', 'panicle_initiation'].includes(farm.cropStage)) {
       riskLevel = 'CRITICAL';

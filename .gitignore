@@ -29,3 +29,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.tmp-testbuild/
+
+# Freebuff internal runtime state (not for commit)
+.freebuff/

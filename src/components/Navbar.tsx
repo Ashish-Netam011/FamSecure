@@ -24,6 +24,9 @@ export default function Navbar({ onOpenSimulation }: NavbarProps) {
 
   const navLinks = [
     { href: '/', label: 'My Farm', icon: Home },
+    // Field Map (/field) + Plot Registry (/plots) parked for the demo build:
+    // the registry only finds plots registered inside FarmRescue and kept being
+    // clobbered by multi-server writes; revisit with a real land-records API.
     { href: '/incidents/new', label: 'Report Incident', icon: PlusCircle, isEmergency: true },
     { href: '/field-worker', label: 'Field Worker Queue', icon: UserCheck },
     { href: '/history', label: 'Incident History', icon: History },

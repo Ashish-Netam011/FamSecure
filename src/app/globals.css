@@ -8,7 +8,7 @@
 }
 
 html {
-  font-size: 16px;
+  font-size: 22px;
 }
 
 body {
@@ -17,7 +17,17 @@ body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   -webkit-font-smoothing: antialiased;
   font-size: 1rem;
-  line-height: 1.6;
+  line-height: 1.7;
+}
+
+/* Force all tiny Tailwind text utilities up to a readable minimum */
+@layer utilities {
+  .text-\[10px\] {
+    font-size: 0.75rem !important;  /* was 10px, now ~13.5px */
+  }
+  .text-\[11px\] {
+    font-size: 0.8rem !important;   /* was 11px, now ~14.4px */
+  }
 }
 
 @keyframes pulse-subtle {

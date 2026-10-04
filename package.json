@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "tsc -p tsconfig.test.json && node scripts/fix-test-aliases.cjs && node --test tests/field-intelligence.test.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
