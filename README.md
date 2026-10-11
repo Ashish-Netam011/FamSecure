@@ -39,7 +39,7 @@ Data / Weather / Farmer Observations
 
 ## 2. Core Features (P0 MVP)
 
-> **Parked for the demo build:** the **Field Map (`/field`)** and **Plot Registry (`/plots`)** features are disabled — the registry could only find plots registered inside FarmRescue (no government land-records verification), and simultaneous dev servers kept overwriting each other's data in the shared database. The full implementation (cascading State→Village→Khasra lookup, map chips, register-on-the-spot, Bhuiyan-style khasra report entry) is preserved in `src/_parked/` — see that folder's header comment for one-step restore. To be revisited with a real land-records API (Bhulekh/ULPIN-style).
+> **Disabled in the current release:** the **Field Map (`/field`)** and **Plot Registry (`/plots`)** features are disabled — the registry could only find plots registered inside FarmRescue (no government land-records verification), and simultaneous dev servers kept overwriting each other's data in the shared database. The full implementation (cascading State→Village→Khasra lookup, map chips, register-on-the-spot, Bhuiyan-style khasra report entry) is preserved in `src/_parked/` — see that folder's header comment for one-step restore. To be revisited with a real land-records API (Bhulekh/ULPIN-style).
 
 - **Farmer Dashboard (`/`)**:
   - Live environmental conditions (24h rainfall, temperature, humidity, wind) powered by Open-Meteo with calibrated agro-climatic fallbacks.
@@ -77,7 +77,7 @@ Data / Weather / Farmer Observations
   - If the database is unreachable, the app transparently runs in memory and retries in the background. Live health: `GET /api/system/persistence`.
 
 - **Scenario Testing & Simulation Lab**:
-  - Interactive simulator drawer allowing users and evaluators to manipulate 24h rainfall (0–140mm), standing water duration (0–72h), depth (0–35cm), soil drainage, and crop stage.
+  - Interactive simulator drawer allowing users and reviewers to manipulate 24h rainfall (0–140mm), standing water duration (0–72h), depth (0–35cm), soil drainage, and crop stage.
   - Instant live reassessment across all dashboards.
 
 ---
@@ -149,7 +149,7 @@ All routes return `{ success, data }` or `{ success, error }`. Full contracts: `
 | `POST` | `/api/incidents/:id/outcome` | Resolution & outcome feedback |
 | `POST` | `/api/incidents/:id/explain` | AI explanation (Gemini, deterministic fallback) |
 | `GET` | `/api/weather?lat&lng` | Live weather (Open-Meteo + fallback model) |
-| `POST` | `/api/simulation/reset` | Reset demo seed state |
+| `POST` | `/api/simulation/reset` | Reset baseline seed state |
 | `GET` | `/api/system/persistence` | Persistence health/status |
 | `GET` | `/api/geo/search?q=` | Location search (server-side proxy) |
 | `GET`/`POST` | `/api/fields` | List / create field (Field Map UI parked; API still live) |

@@ -364,7 +364,7 @@ export default function SimulationDrawer({
             className="w-full py-2.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-semibold rounded-2xl text-sm flex items-center justify-center gap-2 transition-colors"
           >
             <RotateCcw className="w-4 h-4 text-slate-400" />
-            <span>Reset Initial Demo State</span>
+            <span>Reset Initial State</span>
           </button>
         </div>
       </div>

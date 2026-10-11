@@ -21,7 +21,7 @@ export async function GET(req: Request) {
 
     const res = await fetch(url, {
       headers: {
-        'User-Agent': 'FarmRescue/1.0 (AGRITHON 2026 field intelligence demo)',
+        'User-Agent': 'FarmRescue/1.0 (field intelligence service)',
         'Accept-Language': 'en',
       },
       signal: AbortSignal.timeout(6000),

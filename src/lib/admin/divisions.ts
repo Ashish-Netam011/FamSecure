@@ -4,7 +4,7 @@
  * Honest scope: this is a REFERENCE list, not an authoritative land-record
  * database. The state list is complete for India; district lists cover
  * Andhra Pradesh, Chhattisgarh and Telangana (demo core states); tahsil →
- * panchayat → village depth exists only for a few demo talukas. Any level
+ * panchayat → village depth exists only for a few reference talukas. Any level
  * with no bundled data falls back to free text in the UI — missing entries
  * never block the user, and values from registered plots are merged into
  * the options at runtime (the registry grows with real data).

@@ -13,7 +13,7 @@ import {
   ChevronRight,
   Layers,
 } from 'lucide-react';
-// PARKED FOR THE DEMO BUILD — restore by moving this folder back (paths in this comment):
+// PARKED IN THE CURRENT RELEASE — restore by moving this folder back (paths in this comment):
 //   src/_parked/plots/page.tsx  → src/app/plots/page.tsx
 //   src/_parked/field/page.tsx  → src/app/field/page.tsx
 //   src/_parked/FieldMap.tsx    → src/components/FieldMap.tsx
@@ -342,7 +342,7 @@ export default function PlotsPage() {
           </h1>
           <p className="text-sm text-slate-500 mt-1">
             Choose your administrative location and khasra number to find a registered plot —
-            details and map position load together. Bundled lists cover demo regions; any level
+            details and map position load together. Bundled lists cover the reference regions; any level
             accepts typed input. Nothing matches? Place the plot on the map below and register it.
           </p>
         </div>
@@ -714,7 +714,7 @@ export default function PlotsPage() {
                 </p>
               )}
               <p className="text-xs text-slate-500">
-                Name checking: values found in the bundled reference list are marked{' '}<span className="font-semibold text-emerald-600">✓</span>; anything else is kept exactly as you typed — the reference data covers only demo regions, so an unmatched name is normal, not an error.
+                Name checking: values found in the bundled reference list are marked{' '}<span className="font-semibold text-emerald-600">✓</span>; anything else is kept exactly as you typed — the reference data covers only the pilot regions, so an unmatched name is normal, not an error.
               </p>
             </div>
           </div>

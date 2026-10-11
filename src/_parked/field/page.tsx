@@ -19,7 +19,7 @@ import {
   XCircle,
   HelpCircle,
 } from 'lucide-react';
-// PARKED FOR THE DEMO BUILD — see src/_parked/plots/page.tsx header for restore steps.
+// PARKED IN THE CURRENT RELEASE — see src/_parked/plots/page.tsx header for restore steps.
 import FieldMap, { FieldMapSelection } from '@/_parked/FieldMap';
 import FieldSearch, { SearchResult } from '@/components/FieldSearch';
 import { LatLng } from '@/lib/geo';

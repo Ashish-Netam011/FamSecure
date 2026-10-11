@@ -111,7 +111,7 @@ Reassessment is **event/user-driven only** — there is no background scheduler.
 |---|---|---|
 | Farmer adds a ground measurement (e.g. "water dropped to 4 cm") | `POST /api/incidents/:id/evidence` | New evidence item → automatic reassessment → plan may change |
 | Simulator applied | `POST /api/incidents/:id/reassess` with `simParams` | Simulated evidence swaps in (tagged `simulated`), farm drainage/stage overridden for the run |
-| Demo reset | `POST /api/simulation/reset` | Store re-seeded to baseline demo state |
+| Baseline reset | `POST /api/simulation/reset` | Store re-seeded to the baseline state |
 
 Each reassessment:
 1. Re-runs the risk engine on current evidence → new `RiskAssessment` (new `ruleVersion` stamp).
@@ -155,7 +155,7 @@ If MongoDB is unreachable, steps 1–5 still complete in memory; the write retri
 
 # 9. Flow 6 — Scenario Testing Lab (Simulation Drawer)
 
-For evaluators/judges on the action screen:
+For reviewers and field agronomists on the action screen:
 
 ```text
 1. Open "⚡ Field Scenario Simulator" drawer
@@ -167,10 +167,10 @@ For evaluators/judges on the action screen:
 3. Or drag sliders: rainfall 0–140 mm · standing water 0–72 h · depth 0–35 cm
    · drainage (poor/moderate/good) · crop stage (seedling → ripening)
 4. "Apply & Reassess" → Flow 3 (simulator path) → severity badge updates live
-5. "Reset Initial Demo State" restores the baseline demo
+5. "Reset Initial State" restores the baseline seed data
 ```
 
-Simulated evidence is always tagged `source: 'simulation'`, `reliability: 'simulated'` — **DEMO / SIMULATION DATA** is never presented as ground truth.
+Simulated evidence is always tagged `source: 'simulation'`, `reliability: 'simulated'` — **SIMULATED DATA** is never presented as ground truth.
 
 ---
 

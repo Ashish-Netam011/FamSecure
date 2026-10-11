@@ -212,7 +212,7 @@ Adapter receives validated facts only (assessment, plan excerpts, evidence) and 
 
 ## 9. Scenario Testing & Simulation Mode
 
-Interactive drawer on the action screen. Parameters: rainfall 0–140 mm, standing-water duration 0–72 h, depth 0–35 cm, drainage, crop stage; four presets. Applied evidence is tagged `source: 'simulation'`, `reliability: 'simulated'` — **DEMO / SIMULATION DATA** is never presented as ground truth. Reset endpoint restores the seed demo state.
+Interactive drawer on the action screen. Parameters: rainfall 0–140 mm, standing-water duration 0–72 h, depth 0–35 cm, drainage, crop stage; four presets. Applied evidence is tagged `source: 'simulation'`, `reliability: 'simulated'` — **SIMULATED DATA** is never presented as ground truth. Reset endpoint restores the baseline seed state.
 
 ## 10. Dev-Mode & Runtime Notes
 

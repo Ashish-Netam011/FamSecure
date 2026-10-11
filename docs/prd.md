@@ -3,9 +3,9 @@
 **Project:** FarmRescue 🌾
 **Product Promise:** *"What should I do when the farm suddenly goes wrong?"*
 **Document:** Product Requirements Document (PRD)
-**Version:** 2.0
+**Version:** 2.1
 **Status:** Living specification — reflects the implemented system as of September 2026
-**Context:** AGRITHON 2026 build; primary demo crop is Paddy (Kharif, Andhra Pradesh delta region)
+**Context:** Production-track platform for smallholder rain-fed and canal-irrigated farming; primary crop focus is Paddy (Kharif, Andhra Pradesh Krishna delta region), designed to extend to other crops and states
 **Companion docs:** [`architecture.md`](architecture.md) (system design) · [`trd.md`](trd.md) (technical requirements) · [`app-flow.md`](app-flow.md) (UX flows)
 
 ---
@@ -15,6 +15,8 @@
 ### 1.1 Problem Statement
 
 When an extreme event hits a smallholder farm — a cloudburst flooding a paddy field, a heat wave during flowering, a pest outbreak — the farmer faces a *time-critical decision gap*: hours matter, expert help is distant, and generic advice (or a chatbot's guess) can be wrong in ways that destroy yield. Fertilizer spread into floodwater is lost entirely. A pesticide sprayed before rain poisons waterways. A field uprooted "to be safe" may have been recoverable from lower nodes.
+
+The structural reality behind this gap: the majority of cultivated holdings are small or marginal, the ratio of extension officers to farmers is extremely low, and the advisory channels that do exist (call centers, generic apps, word of mouth, fertilizer-dealer counters) have no visibility into the specific field's crop stage, soil, drainage, or live weather — so their advice is generic by construction. When that advice is wrong at the wrong moment, the loss is concentrated on the household least able to absorb it: a failed paddy stand means the season's primary income, seed, and input investment are gone together. FarmRescue is built for that exact window — the hours between "something has gone wrong" and "an expert can physically reach the field."
 
 ### 1.2 Product Promise
 
@@ -40,6 +42,29 @@ Concretely: recommendations come from a **pre-stored library** of expert plans (
 4. **Fail-safe degradation** — every external dependency (weather API, AI, database) has a graceful fallback; the farmer-facing answer never fails outright.
 5. **Auditable evolution** — reassessments append new assessment versions; history is never overwritten.
 
+### 1.5 Deployment & Operating Model
+
+FarmRescue is designed to be deployed through the institutions that already reach farmers, rather than expecting individual downloads:
+
+- **Extension networks** — field officers and KVK (Krishi Vigyan Kendra) staff use the Field Worker Queue (`/field-worker`) as their daily triage surface: every HIGH/CRITICAL assessment lands in a prioritized queue with distance indicators and a structured ground-truth verification form.
+- **FPO cooperatives** — Farmer Producer Organizations get community-level visibility: escalation plans already name FPO coordinators for shared resources (community drainage canals, pump support, coordinated seedling nurseries), and the roadmap adds FPO-level dashboards.
+- **State agriculture departments** — the escalation ledger, verification records, and outcome data form a defensible audit trail for scheme-linked compensation review and district-level advisory planning.
+- **Low-bandwidth channels (roadmap)** — SMS/WhatsApp delivery of the action plan so the farmer does not need the app open in the field; the deterministic core means a plan can be rendered as plain text without any generation step.
+- **Data ownership** — farms, incidents, and evidence belong to the deployment (state/FPO/private operator), not the platform; the single-snapshot MongoDB model exports cleanly, and no farmer data trains any model.
+
+### 1.6 Success Metrics (pilot KPIs)
+
+The pilot is instrumented — every metric below is computable from data FarmRescue already persists:
+
+| Metric | Definition | Source |
+|---|---|---|
+| **Time-to-first-action** | Incident reported → plan on screen. Target: < 5 s (deterministic, no generation step) | `Incident.createdAt` vs assessment timestamp |
+| **Verification SLA** | % of HIGH/CRITICAL incidents field-verified within `reviewAt` (3 h / 6 h) | `VerificationRecord.verifiedAt` vs `RiskAssessment.reviewAt` |
+| **Escalation accuracy** | % of escalated incidents where field verification confirms or partially confirms the assessment | `VerificationRecord.status` distribution |
+| **Outcome efficacy** | % of resolved incidents where the farmer reports `situationImproved = yes` and `actionsHelpful = yes` | `IncidentOutcome` |
+| **Return engagement** | Farmers who report a second incident after resolving the first (proxy for trust) | incident history per farm |
+| **Advisory safety** | Zero farmer-facing plans containing contraindicated actions (safety-gate intercepts + audit review) | `safetyWarnings` + timeline audit |
+
 ---
 
 ## 2. Users & Roles
@@ -53,7 +78,7 @@ Roles are modeled in `src/types/index.ts` (`UserRole`). Auth is **not yet implem
 | **FPO_ADMIN** | (Planned role; today represented in escalation text — community drainage canal coordination, pump support, seed/nursery logistics) | — |
 | **SYSTEM_ADMIN** | Inspect persistence/health status via the system API | `GET /api/system/persistence` |
 
-**Primary personas for the demo:**
+**Reference personas (pilot region):**
 - *Krishna Reddy* — farmer, 2.8-acre paddy field ("Vemuru Riverbed Field", BPT 5204 / Samba Mahsuri, tillering stage, clay loam, poor drainage), facing monsoon waterlogging.
 - *Ramesh Kumar* — agricultural field officer who verifies high-risk incidents.
 
@@ -78,7 +103,7 @@ Roles are modeled in `src/types/index.ts` (`UserRole`). Auth is **not yet implem
 All features below are **implemented and verified** unless explicitly marked otherwise.
 
 ### 4.1 Farmer Dashboard (`/`)
-- Live environmental conditions for the demo farm: 24h rainfall, temperature, humidity, wind — served by the weather adapter (Open-Meteo, 15-min cache) with a calibrated agro-climatic fallback when offline (`source: open_meteo_live | fallback_climate_model`).
+- Live environmental conditions for the pilot farm: 24h rainfall, temperature, humidity, wind — served by the weather adapter (Open-Meteo, 15-min cache) with a calibrated agro-climatic fallback when offline (`source: open_meteo_live | fallback_climate_model`).
 - Active incident cards with real-time severity badges (`CRITICAL`, `HIGH`, `MODERATE`, `LOW`) and rule version.
 - Prominent emergency CTA: *"🚨 Something wrong with your farm right now? [Report a Problem Now]"*.
 - Cross-page live refresh: simulator and reassessment actions broadcast a `farmrescue:reassessed` browser event; all dashboards listening on the page refetch.
@@ -112,16 +137,16 @@ All features below are **implemented and verified** unless explicitly marked oth
 - Non-destructive: every reassessment appends a new `RiskAssessment` to `assessmentsHistory`; nothing is overwritten.
 
 ### 4.6 Scenario Testing & Simulation Lab (drawer on `/incidents/:id`)
-Interactive stress-testing of the deterministic engine, clearly labeled for evaluators:
+Interactive stress-testing of the deterministic engine, clearly labeled as simulated data:
 - **Sliders:** 24h rainfall 0–140 mm (step 5) · standing-water duration 0–72 h (step 2) · water depth 0–35 cm (step 1).
 - **Toggles:** field drainage (`poor | moderate | good`) · crop stage (seedling → ripening).
 - **Presets:** ⛈️ Severe Flood (115 mm, 48 h, 25 cm, poor → CRITICAL) · 🌧️ Heavy Waterlog (82/24/18, poor → HIGH) · 🌦️ Moderate Pool (35/8/8, moderate → MODERATE) · ☀️ Drained/Normal (5/0/2, good → NORMAL).
-- **Apply & Reassess** posts `simParams` to `POST /api/incidents/:id/reassess`; simulated evidence items are tagged `source: 'simulation'`, `reliability: 'simulated'` so demo data never masquerades as ground truth.
-- **Reset Demo State** (`POST /api/simulation/reset`) restores the seed farm + demo incident.
+- **Apply & Reassess** posts `simParams` to `POST /api/incidents/:id/reassess`; simulated evidence items are tagged `source: 'simulation'`, `reliability: 'simulated'` so simulated data never masquerades as ground truth.
+- **Reset Baseline State** (`POST /api/simulation/reset`) restores the seed farm + reference incident.
 
-### 4.7 Field Intelligence — Map, Location & Field Context (⚠ Parked for the demo build)
+### 4.7 Field Intelligence — Map, Location & Field Context (⚠ Disabled in the current release)
 
-> **Status change (demo build):** the `/field` and `/plots` UIs are disabled and their code parked in `src/_parked/` (restore steps in that folder's header). The backing APIs (`/api/fields*`, geocoding, weather/soil bundles) remain live. Reasons: the Plot Registry could only surface plots registered inside FarmRescue — with no government land-records verification, arbitrary real villages/khasras always returned "0 plots match"; and multiple simultaneously-running dev servers against one MongoDB snapshot clobbered each other's writes (registered plots vanished). To be revisited with a real land-records API (Bhulekh/ULPIN-style) and single-writer data ownership. Everything below describes the parked implementation.
+> **Status change (current release):** the `/field` and `/plots` UIs are disabled and their code parked in `src/_parked/` (restore steps in that folder's header). The backing APIs (`/api/fields*`, geocoding, weather/soil bundles) remain live. Reasons: the Plot Registry could only surface plots registered inside FarmRescue — with no government land-records verification, arbitrary real villages/khasras always returned "0 plots match"; and multiple simultaneously-running dev servers against one MongoDB snapshot clobbered each other's writes (registered plots vanished). To be revisited with a real land-records API (Bhulekh/ULPIN-style) and single-writer data ownership. Everything below describes the parked implementation.
 
 ### 4.7a Parked: Field Intelligence — Map, Location & Field Context (implemented, UI disabled)
 - **Interactive field map** (`/field`): satellite-**default** slippy map built in-repo (zero map-library dependencies; Esri World Imagery + OSM tiles), [Map] [Satellite] [Hybrid] switching, pan/zoom/touch, GPS button (denial falls back gracefully with a message), tap-to-pin, move-pin, and optional **user-marked field boundary** polygon (tap points → close; area computed, labeled "not survey-grade"). Imagery is explicitly footnoted "not real-time"; poor-imagery fallback UX directs to GPS/manual pin.
@@ -141,13 +166,13 @@ Interactive stress-testing of the deterministic engine, clearly labeled for eval
 
 ### 4.9 Parked: Plot Registry — Land-Record Lookup & Map (`/plots`, implemented, UI disabled — see 4.7 status note)
 - **Cascading land-record lookup**: **State → District → Tahsil/Mandal → Panchayat → Village (gaon) → Khasra/plot no.** Each level is a datalist-backed input — bundled options where the reference dataset covers the region, free text everywhere else (unknown divisions are valid input and never block the user). Changing a parent clears deeper levels (cascade semantics); deeper levels stay disabled until their parent is set.
-- **Bundled admin-division dataset** (`src/lib/admin/divisions.ts`): all 36 states/UTs; district lists for Andhra Pradesh, Chhattisgarh, Telangana; deep tahsil→panchayat→village chains for demo talukas (e.g. Bapatla → Vemuru → Vemuru panchayat). Helpers: `divisionOptions(level, sel)`, `describeSelection(sel)`, `ADMIN_LEVELS`, `ADMIN_LABELS`.
+- **Bundled admin-division dataset** (`src/lib/admin/divisions.ts`): all 36 states/UTs; district lists for Andhra Pradesh, Chhattisgarh, Telangana; deep tahsil→panchayat→village chains for the reference talukas (e.g. Bapatla → Vemuru → Vemuru panchayat). Helpers: `divisionOptions(level, sel)`, `describeSelection(sel)`, `ADMIN_LEVELS`, `ADMIN_LABELS`.
 - **Matching** (`src/lib/admin/plotRegistry.ts`): hierarchy levels match exact case-insensitive; an unset level imposes no constraint; khasra matches as a substring ("42" finds "42/1B"). Filtering runs client-side over `GET /api/fields` — instant with the current dataset size.
 - **Map integration**: matches render on the field map as chips with dashed boundary polygons; a selected plot turns emerald and the map recenters on it without disturbing the selection pin; a **single match auto-selects**, so the details card and map position load together with no extra click.
 - **Details card**: land record (khasra no., village / tahsil / panchayat / district / state, area — boundary-derived or recorded, coordinates) plus crop & field profile; `DEMO DATA` badge on SEEDED plots; deep link into Field Intelligence (`/field?plot=<id>`, honored by the field page).
 - **Nearest plot to me**: GPS fix finds the closest registered plot (straight-line distance, honestly labeled) and auto-fills the whole cascade.
 - **Zero-match → register on the spot**: when a lookup finds nothing, the empty state explains that the registry only contains plots registered inside FarmRescue and offers **"Register this plot here"** — the farmer taps the plot's location on the satellite map (tap-to-pin, optional drawn boundary), and the page POSTs the searched hierarchy + khasra with the pin's coordinates; the server validates and stores it as REGISTERED, after which every matching lookup finds it.
-- **Honest name checking, not a gate**: each typed level shows a live hint — `✓ In reference list` when the bundled dataset covers it, `⚠ Not in the bundled list — will be saved exactly as typed` when the parent chain is bundled but the name is unknown, and nothing when no reference data covers that chain (unchecked ≠ wrong). No spelling is ever rejected; real land-record spellings are countless and the bundle covers only demo regions.
+- **Honest name checking, not a gate**: each typed level shows a live hint — `✓ In reference list` when the bundled dataset covers it, `⚠ Not in the bundled list — will be saved exactly as typed` when the parent chain is bundled but the name is unknown, and nothing when no reference data covers that chain (unchecked ≠ wrong). No spelling is ever rejected; real land-record spellings are countless and the bundle covers only the reference regions.
 - **Bhuiyan-style khasra report details** (`Farm.officialRecord`): the details card offers a khasra-report section where the farmer copies खातेदार / landholder, रकबा / area (+unit), किस्म / land type, and co-holders from the official portal record (e.g. CG Bhuiyan `Selection_Report_For_KhasraDetail.aspx`). Stored with explicit provenance ("farmer-entered from the official khasra report — not server-verified", portal + date); `officialRecord: null` on PATCH clears it. For Chhattisgarh plots the card links directly into the CG Bhuiyan khasra report flow (जिला → तहसील → ग्राम → खसरा).
 - **Data model**: farms ARE the plot records — `Farm.khasraNo?`, `Farm.recordSource: 'SEEDED' | 'REGISTERED'`; `LocationCoordinates` gains `tahsil?` / `panchayat?`. Three SEEDED demo plots (Vemuru khasra 42/1B & 43; Abhanpur khasra 7/2) re-seed automatically after hydration if missing; plots created via the API are REGISTERED. PATCH semantics: an empty string unsets a field.
 
@@ -361,7 +386,7 @@ All routes return `{ success: true, data }` or `{ success: false, error: { messa
 | 9 | `POST /api/incidents/:id/outcome` | Resolution & feedback | Marks RESOLVED, severity → NORMAL |
 | 10 | `POST /api/incidents/:id/explain` | AI explanation | Gemini with deterministic fallback; response carries `source` |
 | 11 | `GET /api/weather?lat&lng` | Live weather | Open-Meteo (15-min cache) with calibrated fallback |
-| 12 | `POST /api/simulation/reset` | Reset demo state | Re-seeds demo farm + waterlogging incident |
+| 12 | `POST /api/simulation/reset` | Reset baseline state | Re-seeds the baseline farm + reference waterlogging incident |
 | 13 | `GET /api/system/persistence` | Persistence health | Waits (≤ 15 s) for hydration to settle, then reports definitive status |
 | 14 | `GET /api/geo/search?q=` | Location search proxy | Server-side Nominatim (UA required), 6 s timeout, fails soft with empty list + note |
 | 15 | `GET /api/fields` · `POST /api/fields` | List / create field | POST validates coords/boundary server-side; stores location provenance; accepts state→village hierarchy + `khasraNo` (trimmed, ≤120 chars) |
@@ -400,7 +425,7 @@ A zero-dependency Node test suite (`npm test`, 31 tests) covers the admin-divisi
 - Heat / pest libraries only cover the severities the engine emits; `HEAT_STRESS::NORMAL`, `PEST_DISEASE::LOW`, etc. resolve to the generic fallback.
 
 ### 14.3 No authentication
-Roles exist in the type system and UI, but API routes accept no credentials; the verification route hardcodes `workerId: 'worker-ramesh'`. Fine for a hackathon demo; blocking for production.
+Roles exist in the type system and UI, but API routes accept no credentials; the verification route hardcodes `workerId: 'worker-ramesh'`. Acceptable for the single-tenant pilot deployment; a blocker for multi-tenant production rollout.
 
 ### 14.4 "Next reassessment scheduled" label is display-only
 The header text on the action screen suggests a scheduled future reassessment, but **no background scheduler exists** — reassessment happens only on explicit triggers (evidence added, simulator applied, reset). Either implement a timed review loop (honoring `reviewAt`) or soften the label.
@@ -409,7 +434,7 @@ The header text on the action screen suggests a scheduled future reassessment, b
 `createIncident` seeds a fixed **65 mm rainfall** reading for *every* new incident regardless of type, and the API defaults standing water to 12 h / 10 cm. This skews assessments for non-water incidents (mitigated by the rule-priority fix, but still synthetic) and should be replaced by live weather-adapter evidence.
 
 ### 14.6 Misc
-- Verify/outcome routes hardcode demo-friendly default values when fields are omitted.
+- Verify/outcome routes fall back to pilot-friendly default values when fields are omitted.
 - Simulator omits `excessive` drainage and `germination`/`harvest` stages.
 - Notification service (SMS/WhatsApp/IVR) exists only in escalation *text*; no real delivery.
 - Incident statuses `DETECTED`, `ASSESSING`, `NOTIFIED`, `MONITORING` are defined but not yet produced by any flow.
@@ -419,7 +444,7 @@ The header text on the action screen suggests a scheduled future reassessment, b
 
 ## 15. Roadmap
 
-### P1 — Hardening (make the demo defensible)
+### P1 — Hardening (make the pilot deployment defensible)
 1. **Extend the test suite** — risk-rule boundary values at every threshold, safety-gate interception rules, library coverage matrix (14.1).
 2. **Real scheduled reassessment** honoring `reviewAt` — or honest removal of the schedule label (14.4).
 3. **Live weather evidence on incident creation** — replace the hardcoded 65 mm with weather-adapter data per farm location (14.5).

@@ -5,7 +5,7 @@
 **Document:** Technical Requirements Document (TRD)
 **Version:** 2.0
 **Status:** Implementation Specification — updated to match the implemented system (September 2026)
-**Primary Demo:** Paddy + heavy rainfall / waterlogging
+**Primary Crop:** Paddy + heavy rainfall / waterlogging
 **Secondary Scenarios:** Heat stress, pest/disease incidents
 **Companion docs:** [`prd.md`](prd.md) (product requirements — authoritative feature list) · [`architecture.md`](architecture.md) (system design) · [`app-flow.md`](app-flow.md) (UX flows)
 
@@ -86,7 +86,7 @@ Status legend: **SHIPPED** = implemented and verified · **PARTIAL** = implement
 ## FR-14: Scenario Testing & Simulation Mode — **SHIPPED**
 - Interactive drawer: rainfall 0–140 mm, standing water 0–72 h, depth 0–35 cm, drainage (poor/moderate/good), crop stage selector; 4 presets (Severe Flood → CRITICAL, Heavy Waterlog → HIGH, Moderate Pool → MODERATE, Drained → NORMAL).
 - Applied via `POST /api/incidents/:id/reassess` with `simParams`; simulated evidence tagged `source: 'simulation'`, `reliability: 'simulated'`; `farmrescue:reassessed` event refreshes all open dashboards.
-- Reset endpoint (`POST /api/simulation/reset`) restores demo seed state.
+- Reset endpoint (`POST /api/simulation/reset`) restores baseline seed state.
 
 ## FR-15: Persistence & Reliability — **SHIPPED** *(new in v2.0)*
 - **FR-15.1 Optional MongoDB persistence** (SHIPPED): enabled by `MONGODB_URI`; snapshot document (`farmrescue-state`, `schemaVersion: 1`) holding all farms + incidents.
@@ -138,7 +138,7 @@ All optional by design: the app is fully functional with zero configuration (see
 2. Every reachable `ruleFamily::riskLevel` combination resolves to a stored plan. ✅ (verified live)
 3. Adding evidence triggers reassessment; history shows both versions. ✅
 4. HIGH/CRITICAL incidents appear in the field-worker queue and can be verified with severity override. ✅
-5. Simulator presets reproduce the four demo severities deterministically. ✅
+5. Simulator presets reproduce the four reference severities deterministically. ✅
 6. With `GEMINI_API_KEY` set, explanation `source` = `ai_adapter_gemini`; without it, `deterministic_fallback` renders completely. ✅ (verified live)
 7. With `MONGODB_URI` set, create → restart → data survives; without it, app runs in-memory without errors. ✅ (verified live)
 8. `GET /api/system/persistence` reports truthful status in all modes. ✅
